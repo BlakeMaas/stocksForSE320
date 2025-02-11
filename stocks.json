@@ -1,0 +1,37 @@
+[
+    {
+        "minimum": 56.0925,
+        "max": 259.02,
+        "average": 157.32336186305741,
+        "median": 155.10000000000002,
+        "ticker": "AAPL"
+    },
+    {
+        "minimum": 135.42,
+        "max": 467.56,
+        "average": 299.65996815286627,
+        "median": 287.16499999999996,
+        "ticker": "MSFT"
+    },
+    {
+        "minimum": 52.7065,
+        "max": 206.38,
+        "average": 121.60019506369431,
+        "median": 122.10825,
+        "ticker": "GOOGL"
+    },
+    {
+        "minimum": 81.82,
+        "max": 242.06,
+        "average": 149.4535087579616,
+        "median": 155.19,
+        "ticker": "AMZN"
+    },
+    {
+        "minimum": 24.0813,
+        "max": 479.86,
+        "average": 220.88774171974518,
+        "median": 222.9033,
+        "ticker": "TSLA"
+    }
+]
