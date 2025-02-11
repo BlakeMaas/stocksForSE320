@@ -1,6 +1,7 @@
 #name: blake maas
 #based off a ml/ai stock tracker i already wrote, and am having to rewrite due to a corruption issue which caused a loss of many many lines of code
 #originally used alphaapi for this, modified to work with nasdaq and furfill hw requirements.
+#rewritten in google colab since my IDE was not liking it. and i think i got it the way you wanted it.
 
 import requests
 from datetime import date
@@ -12,17 +13,18 @@ def get_stock_data(ticker: str) -> dict:
     gets stock data for the given ticker from nasdaq.
     returns a list of closing prices if successful, else raises an exception.
     """
-    
-    #realised you gave us a beautiful thing to start so changed to fit this: 
+    # realised you gave us a beautiful thing to start so changed to fit this
     ticker = ticker.upper()  # make sure ticker is uppercase
-    current_date = date.today()  # get today's date
-    start_period = str(current_date.replace(year=current_date.year - 5))  # start date 5 years ago
-    base_url = "https://api.nasdaq.com" # setup base url and components for api request
-    path = f"/api/quote/{ticker}/historical?assetclass=stocks&fromdate={start_period}&limit=9999"
+    today = date.today()  # get today's date
+    start = str(today.replace(year=today.year - 5))  # start date 5 years ago
+    base_url = "https://api.nasdaq.com"  # setup base url and components for api request
+    path = f"/api/quote/{ticker}/historical?assetclass=stocks&fromdate={start}&limit=9999"
     request_url = base_url + path  # full api request url
     headers = {
-        "User-Agent": "Mozilla/5.0"  # avoid request blocking
-    }
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36",
+        "Accept": "application/json, text/javascript, */*; q=0.01",
+        "Referer": "https://www.nasdaq.com"
+    }  # changed header to work better because of error I had
 
     try:
         # send request and check for issues
@@ -36,7 +38,7 @@ def get_stock_data(ticker: str) -> dict:
 
         # extract closing prices
         closing_prices = [
-            float(entry["close"].replace(',', ''))  # clean and convert prices
+            float(entry["close"].replace('$', '').replace(',', '').strip())  # clean and convert prices
             for entry in response_data["data"]["tradesTable"]["rows"]
         ]
         
@@ -59,7 +61,7 @@ def process_stock_data(prices: list) -> dict:
     return {
         "minimum": min(prices),
         "max": max(prices),
-        "avgerage": sum(prices) / len(prices),
+        "average": sum(prices) / len(prices), 
         "median": statistics.median(prices)
     }
 
@@ -82,3 +84,12 @@ if __name__ == "__main__":
         except RuntimeError as e:
             # print any errors encountered
             print(e)
+
+    # protect file writing using try/except
+    try:
+        # write the result data to stocks.json
+        with open("stocks.json", "w") as outfile:
+            json.dump(result_data, outfile, indent=4)
+        print("results successfully written to stocks.json")
+    except IOError as e:
+        print(f"file write error: {e}")
